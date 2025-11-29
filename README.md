@@ -1,4 +1,4 @@
-# `dewi-kadita`: A Python Library for 3D idealized Couzin Model Fish Schooling Simulation
+# `dewi-kadita`: A Python Library for 3D Idealized Couzin Model Fish Schooling Simulation
 
 [![Python 3.8+](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
 [![PyPI version](https://img.shields.io/pypi/v/dewi-kadita.svg)](https://pypi.org/project/dewi-kadita/)
