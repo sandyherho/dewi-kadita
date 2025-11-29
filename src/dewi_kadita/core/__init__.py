@@ -11,6 +11,7 @@ from .metrics import (
     compute_velocity_correlation_entropy,
     compute_school_shape_entropy,
     compute_oceanic_schooling_index,
+    compute_order_index,
     compute_all_metrics,
     compute_metrics_timeseries
 )
@@ -26,6 +27,7 @@ __all__ = [
     "compute_velocity_correlation_entropy",
     "compute_school_shape_entropy",
     "compute_oceanic_schooling_index",
+    "compute_order_index",
     "compute_all_metrics",
     "compute_metrics_timeseries"
 ]

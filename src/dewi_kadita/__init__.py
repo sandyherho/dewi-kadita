@@ -1,7 +1,7 @@
 """dewi-kadita: Idealized 3D Couzin Model Fish Schooling Simulator with Oceanic Entropy Metrics"""
 
 __version__ = "0.0.1"
-__author__ = "Sandy H. S. Herho, Iwan P. Anwar, Siti N. Kaban, Faruq Khadami"
+__author__ = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Siti N. Kaban, Kamaluddin Kasim"
 __email__ = "sandy.herho@email.ucr.edu"
 __license__ = "MIT"
 
@@ -16,6 +16,7 @@ from .core.metrics import (
     compute_velocity_correlation_entropy,
     compute_school_shape_entropy,
     compute_oceanic_schooling_index,
+    compute_order_index,
     compute_all_metrics,
     compute_metrics_timeseries
 )
@@ -35,6 +36,7 @@ __all__ = [
     "compute_velocity_correlation_entropy",
     "compute_school_shape_entropy",
     "compute_oceanic_schooling_index",
+    "compute_order_index",
     "compute_all_metrics",
     "compute_metrics_timeseries"
 ]

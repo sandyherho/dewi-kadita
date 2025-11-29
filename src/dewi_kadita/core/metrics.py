@@ -11,7 +11,7 @@ Measures implemented (unique to fish schooling):
 3. Depth Stratification Entropy - Vertical position distribution
 4. Angular Momentum Entropy - Rotation state distribution
 5. Nearest Neighbor Entropy - k-NN distance variability
-6. Velocity Correlation Entropy - Spatial autocorrelation
+6. Velocity Correlation Entropy - Pairwise velocity alignment distribution
 7. School Shape Entropy - Principal component ratios
 8. Oceanic Schooling Index (OSI) - Composite metric
 
@@ -300,24 +300,26 @@ def compute_velocity_correlation_entropy(
     positions: np.ndarray,
     velocities: np.ndarray,
     box_size: float,
-    n_distance_bins: int = 10,
-    max_dist_ratio: float = 0.3
+    n_bins: int = 20
 ) -> float:
     """
-    Compute entropy of velocity spatial correlation function.
+    Compute entropy of pairwise velocity correlation distribution.
     
-    Measures how velocity alignment varies with distance. Strong
-    correlations at all distances indicate cohesive schooling;
-    rapid decorrelation indicates fragmented groups.
+    FIXED VERSION: Measures the distribution of pairwise velocity
+    dot products (correlations). 
     
-    Ecological relevance: Information transfer efficiency, wave propagation.
+    - Highly aligned schools: all correlations ~ 1 → concentrated 
+      distribution → LOW entropy
+    - Disordered schools: correlations spread from -1 to 1 → 
+      broad distribution → HIGH entropy
+    
+    Ecological relevance: Information transfer efficiency, collective alignment.
     
     Args:
         positions: (N, 3) fish positions
         velocities: (N, 3) fish velocities
         box_size: Simulation volume size
-        n_distance_bins: Number of distance bins
-        max_dist_ratio: Maximum distance as fraction of box size
+        n_bins: Number of histogram bins
     
     Returns:
         Normalized velocity correlation entropy in [0, 1]
@@ -326,45 +328,36 @@ def compute_velocity_correlation_entropy(
     if n < 2:
         return 0.5
     
-    max_dist = box_size * max_dist_ratio
-    
     # Normalize velocities
     v_norms = np.linalg.norm(velocities, axis=1, keepdims=True)
     v_norms[v_norms < 1e-10] = 1.0
     v_unit = velocities / v_norms
     
-    # Pairwise distances with PBC
-    delta = positions[:, np.newaxis, :] - positions[np.newaxis, :, :]
-    delta = delta - box_size * np.round(delta / box_size)
-    dists = np.linalg.norm(delta, axis=2)
+    # Compute pairwise velocity correlations (dot products)
+    # Result: correlation matrix where entry (i,j) = v_i · v_j
+    # For aligned school: all values ~ 1
+    # For disordered: values spread from -1 to 1
+    correlations = np.dot(v_unit, v_unit.T)
     
-    # Pairwise velocity correlations (dot products)
-    correlations = np.sum(v_unit[:, np.newaxis, :] * v_unit[np.newaxis, :, :], axis=2)
+    # Get upper triangle (exclude diagonal and avoid double counting)
+    triu_idx = np.triu_indices(n, k=1)
+    all_corr = correlations[triu_idx]
     
-    # Bin by distance and compute mean correlation per bin
-    dist_bins = np.linspace(0, max_dist, n_distance_bins + 1)
-    corr_by_dist = []
+    # Shift correlations from [-1, 1] to [0, 1] for histogram
+    corr_shifted = (all_corr + 1.0) / 2.0
     
-    for i in range(n_distance_bins):
-        mask = (dists >= dist_bins[i]) & (dists < dist_bins[i+1])
-        np.fill_diagonal(mask, False)
-        
-        if np.any(mask):
-            corr_by_dist.append(np.mean(correlations[mask]))
-        else:
-            corr_by_dist.append(0.0)
+    # Histogram of correlation values
+    hist, _ = np.histogram(corr_shifted, bins=n_bins, range=(0, 1))
     
-    corr_by_dist = np.array(corr_by_dist)
+    prob = hist / hist.sum() if hist.sum() > 0 else hist
+    prob = prob[prob > 0]
     
-    # Transform to positive values for entropy
-    corr_shifted = (corr_by_dist + 1) / 2  # [-1, 1] -> [0, 1]
-    corr_shifted = corr_shifted + 0.01  # Avoid zeros
+    if len(prob) == 0:
+        return 0.5
     
-    # Normalize to probability
-    prob = corr_shifted / corr_shifted.sum()
-    
+    # Shannon entropy
     H = -np.sum(prob * np.log(prob))
-    H_max = np.log(n_distance_bins)
+    H_max = np.log(n_bins)
     
     return H / H_max if H_max > 0 else 0.5
 
@@ -427,6 +420,10 @@ def compute_oceanic_schooling_index(
     
     OSI = Σ(w_i * H_i) where weights emphasize schooling-specific measures.
     
+    Interpretation:
+        - OSI ~ 0: Highly ordered school (low entropy)
+        - OSI ~ 1: Disordered aggregation (high entropy)
+    
     Args:
         positions: (N, 3) fish positions
         velocities: (N, 3) fish velocities
@@ -447,18 +444,16 @@ def compute_oceanic_schooling_index(
     # Weights optimized for fish schooling (sum to 1)
     # Higher weight on polarization and cohesion as primary schooling indicators
     weights = {
-        'cohesion': 0.20,
-        'polarization': 0.25,
-        'depth': 0.10,
-        'angular': 0.10,
+        'cohesion': 0.18,
+        'polarization': 0.28,  # Increased - most important for alignment
+        'depth': 0.08,
+        'angular': 0.08,
         'knn': 0.10,
-        'vel_corr': 0.15,
+        'vel_corr': 0.18,  # Now properly computed
         'shape': 0.10
     }
     
-    # Composite index
-    # Note: For OSI, high entropy = disorder, low entropy = order
-    # We keep this convention (high OSI = disordered school)
+    # Composite index: high entropy = high OSI = disorder
     OSI = (
         weights['cohesion'] * H_cohesion +
         weights['polarization'] * H_polarization +
@@ -479,6 +474,24 @@ def compute_oceanic_schooling_index(
         'school_shape_entropy': H_shape,
         'oceanic_schooling_index': OSI
     }
+
+
+def compute_order_index(polarization: float, rotation: float) -> float:
+    """
+    Compute simple Order Index based on order parameters.
+    
+    A simpler, more interpretable alternative to entropy-based OSI.
+    
+    Args:
+        polarization: Polarization order parameter P in [0, 1]
+        rotation: Rotation order parameter M in [0, 1]
+    
+    Returns:
+        Order Index in [0, 1] where:
+        - High value = ordered (either aligned or milling)
+        - Low value = disordered swarm
+    """
+    return max(polarization, rotation)
 
 
 def compute_all_metrics(
@@ -521,6 +534,9 @@ def compute_all_metrics(
     # Oceanic entropy measures
     oceanic = compute_oceanic_schooling_index(positions, velocities, box_size)
     
+    # Simple order index
+    order_index = compute_order_index(polarization, rotation)
+    
     # Group spread
     spread = np.sqrt(np.mean(np.linalg.norm(r, axis=1) ** 2))
     
@@ -528,6 +544,7 @@ def compute_all_metrics(
         'polarization': polarization,
         'rotation': rotation,
         'spread': spread,
+        'order_index': order_index,
         **oceanic
     }
 
@@ -561,6 +578,7 @@ def compute_metrics_timeseries(
         'polarization',
         'rotation',
         'spread',
+        'order_index',
         'school_cohesion_entropy',
         'polarization_entropy',
         'depth_stratification_entropy',

@@ -209,14 +209,6 @@ The library generates:
 - **PNG**: Static summary plots with oceanic entropy visualization
 - **GIF**: Animated 3D visualization with underwater aesthetic
 
-## Test Cases
-
-| Case | Description | State | Key Parameters |
-|:----:|:------------|:-----:|:---------------|
-| 1 | Swarm | Disordered | Large r_r, small r_o |
-| 2 | Torus/Mill | Rotating | Balanced zones |
-| 3 | Dynamic Parallel | Fluctuating alignment | Medium noise |
-| 4 | Highly Parallel | Stable alignment | Low noise, large r_o |
 
 ## Dependencies
 
@@ -232,14 +224,14 @@ The library generates:
 
 ## License
 
-MIT © Sandy H. S. Herho, Iwan P. Anwar, Siti N. Kaban, Faruq Khadami
+MIT © Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Siti N. Kaban, Kamaluddin Kasim
 
 ## Citation
 
 ```bibtex
 @software{herho2025_dewi_kadita,
   title   = {{\texttt{dewi-kadita}: A Python library for 3D idealized Couzin model fish schooling simulation}},
-  author  = {Herho, Sandy H. S. and Anwar, Iwan P. and Kaban, Siti N. and Khadami, Faruq},
+  author  = {Herho, Sandy H. S. and Anwar, Iwan P. and Khadami, Faruq and Kaban, Siti N. and Kasim, Kamaluddin},
   year    = {2025},
   url     = {https://github.com/sandyherho/dewi-kadita}
 }

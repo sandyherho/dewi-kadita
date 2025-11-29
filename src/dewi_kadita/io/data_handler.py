@@ -48,6 +48,7 @@ class DataHandler:
             'Polarization': metrics['polarization'],
             'Rotation': metrics['rotation'],
             'Spread': metrics['spread'],
+            'Order_Index': metrics['order_index'],
             'School_Cohesion_Entropy': metrics['school_cohesion_entropy'],
             'Polarization_Entropy': metrics['polarization_entropy'],
             'Depth_Stratification_Entropy': metrics['depth_stratification_entropy'],
@@ -77,6 +78,7 @@ class DataHandler:
             'polarization',
             'rotation',
             'spread',
+            'order_index',
             'school_cohesion_entropy',
             'polarization_entropy',
             'depth_stratification_entropy',
@@ -215,15 +217,23 @@ class DataHandler:
             
             # Oceanic entropy metrics
             if metrics is not None:
+                # Order index (new)
+                nc_var = nc.createVariable('order_index', 'f8', ('time',), zlib=True)
+                nc_var[:] = metrics['order_index']
+                nc_var.units = "dimensionless"
+                nc_var.long_name = "order_index"
+                nc_var.valid_range = [0.0, 1.0]
+                nc_var.description = "Simple order index: max(P, M). High = ordered."
+                
                 entropy_vars = [
                     ('school_cohesion_entropy', 'School cohesion entropy (NND distribution)'),
                     ('polarization_entropy', 'Polarization entropy (heading distribution)'),
                     ('depth_stratification_entropy', 'Depth stratification entropy'),
                     ('angular_momentum_entropy', 'Angular momentum entropy (milling)'),
                     ('nearest_neighbor_entropy', 'k-NN distance entropy'),
-                    ('velocity_correlation_entropy', 'Velocity spatial correlation entropy'),
+                    ('velocity_correlation_entropy', 'Velocity correlation entropy (pairwise alignment)'),
                     ('school_shape_entropy', 'School shape entropy (PCA)'),
-                    ('oceanic_schooling_index', 'Composite Oceanic Schooling Index')
+                    ('oceanic_schooling_index', 'Composite Oceanic Schooling Index (high = disorder)')
                 ]
                 
                 for var_name, description in entropy_vars:
@@ -272,10 +282,12 @@ class DataHandler:
             nc.mean_rotation = float(result['mean_rotation'])
             
             if metrics is not None:
+                nc.final_order_index = float(metrics['order_index_final'])
+                nc.mean_order_index = float(metrics['order_index_mean'])
                 nc.final_oceanic_schooling_index = float(metrics['oceanic_schooling_index_final'])
                 nc.mean_oceanic_schooling_index = float(metrics['oceanic_schooling_index_mean'])
             
             # References
-            nc.author = "Sandy H. S. Herho, Iwan P. Anwar, Siti N. Kaban, Faruq Khadami"
+            nc.author = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Siti N. Kaban, Kamaluddin Kasim"
             nc.email = "sandy.herho@email.ucr.edu"
             nc.license = "MIT"

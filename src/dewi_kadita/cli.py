@@ -21,7 +21,7 @@ def print_header():
     """Print ASCII art header with oceanic theme."""
     print("\n" + "=" * 70)
     print(" " * 10 + "dewi-kadita: 3D Idealized Couzin Fish Schooling Simulator")
-    print(" " * 25 + "Version 0.0.1")
+    print(" " * 25 + "Version 0.0.2")
     print("=" * 70)
     print("\n  Named after Kanjeng Ratu Kidul, Queen of the Southern Sea")
     print("  Collective Motion and Fish Schooling Behavior Simulation")
@@ -49,6 +49,29 @@ def normalize_scenario_name(scenario_name: str) -> str:
     
     clean = clean.rstrip('_')
     return clean
+
+
+def classify_school_state(polarization: float, rotation: float) -> str:
+    """
+    Classify the collective state based on order parameters.
+    
+    Args:
+        polarization: Polarization order parameter P
+        rotation: Rotation order parameter M
+    
+    Returns:
+        String describing the collective state
+    """
+    if polarization > 0.9:
+        return "Highly Parallel"
+    elif polarization > 0.7:
+        return "Dynamic Parallel"
+    elif rotation > 0.5:
+        return "Torus/Milling"
+    elif polarization > 0.4 or rotation > 0.3:
+        return "Transitional"
+    else:
+        return "Swarm"
 
 
 def run_scenario(config: dict, output_dir: str = "outputs",
@@ -140,9 +163,10 @@ def run_scenario(config: dict, output_dir: str = "outputs",
                 )
                 
                 if verbose:
-                    print(f"\n      Final Oceanic Schooling Index: {metrics['oceanic_schooling_index_final']:.4f}")
+                    print(f"\n      Final OSI: {metrics['oceanic_schooling_index_final']:.4f}")
+                    print(f"      Final Order Index: {metrics['order_index_final']:.4f}")
                     print(f"      Final Polarization Entropy: {metrics['polarization_entropy_final']:.4f}")
-                    print(f"      Final Cohesion Entropy: {metrics['school_cohesion_entropy_final']:.4f}")
+                    print(f"      Final Vel. Correlation Entropy: {metrics['velocity_correlation_entropy_final']:.4f}")
         else:
             if verbose:
                 print("\n[4/8] Skipping entropy metrics (disabled in config)")
@@ -244,15 +268,23 @@ def run_scenario(config: dict, output_dir: str = "outputs",
         metrics_time = timer.times.get('metrics', 0)
         total_time = timer.times.get('total', 0)
         
+        # Classify collective state
+        state = classify_school_state(
+            result['final_polarization'],
+            result['final_rotation']
+        )
+        
         if verbose:
             print(f"\n[8/8] SIMULATION COMPLETED")
             print(f"{'=' * 70}")
-            print(f"  Final polarization: {result['final_polarization']:.4f}")
-            print(f"  Final rotation: {result['final_rotation']:.4f}")
+            print(f"  Collective State: {state}")
+            print(f"  Final polarization (P): {result['final_polarization']:.4f}")
+            print(f"  Final rotation (M): {result['final_rotation']:.4f}")
             print(f"  Mean polarization (2nd half): {result['mean_polarization']:.4f}")
             print(f"  Mean rotation (2nd half): {result['mean_rotation']:.4f}")
             if metrics is not None:
-                print(f"  Final OSI (disorder): {metrics['oceanic_schooling_index_final']:.4f}")
+                print(f"  Order Index: {metrics['order_index_final']:.4f} (0=disorder, 1=order)")
+                print(f"  OSI: {metrics['oceanic_schooling_index_final']:.4f} (0=order, 1=disorder)")
             print(f"  Simulation time: {sim_time:.2f} s")
             if metrics_time > 0:
                 print(f"  Metrics computation: {metrics_time:.2f} s")

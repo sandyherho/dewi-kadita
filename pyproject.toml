@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dewi-kadita"
 version = "0.0.1"
-description = "Idealized 3D Couzin Model Fish Schooling Simulator with Oceanic Entropy Metrics"
+description = "3D Idealized Couzin Model Fish Schooling Simulator with Oceanic Entropy Metrics"
 authors = ["Sandy H. S. Herho <sandy.herho@email.ucr.edu>"]
 license = "MIT"
 readme = "README.md"
