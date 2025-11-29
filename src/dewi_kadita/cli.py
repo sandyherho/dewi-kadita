@@ -20,10 +20,10 @@ from .utils.timer import Timer
 def print_header():
     """Print ASCII art header with oceanic theme."""
     print("\n" + "=" * 70)
-    print(" " * 10 + "🌊 dewi-kadita: 3D Couzin Fish Schooling Simulator 🐟")
+    print(" " * 10 + "dewi-kadita: 3D Idealized Couzin Fish Schooling Simulator")
     print(" " * 25 + "Version 0.0.1")
     print("=" * 70)
-    print("\n  Named after Dewi Kadita, Queen of the Southern Sea")
+    print("\n  Named after Kanjeng Ratu Kidul, Queen of the Southern Sea")
     print("  Collective Motion and Fish Schooling Behavior Simulation")
     print("  Couzin Zone-Based Model with Oceanic Entropy Metrics")
     print("  License: MIT")
@@ -59,7 +59,7 @@ def run_scenario(config: dict, output_dir: str = "outputs",
     
     if verbose:
         print(f"\n{'=' * 70}")
-        print(f"🐟 SCENARIO: {scenario_name}")
+        print(f"SCENARIO: {scenario_name}")
         print(f"{'=' * 70}")
     
     logger = SimulationLogger(clean_name, "logs", verbose)
@@ -239,7 +239,7 @@ def run_scenario(config: dict, output_dir: str = "outputs",
         total_time = timer.times.get('total', 0)
         
         if verbose:
-            print(f"\n[8/8] 🎉 SIMULATION COMPLETED")
+            print(f"\n[8/8] SIMULATION COMPLETED")
             print(f"{'=' * 70}")
             print(f"  Final polarization: {result['final_polarization']:.4f}")
             print(f"  Final rotation: {result['final_rotation']:.4f}")
@@ -262,7 +262,7 @@ def run_scenario(config: dict, output_dir: str = "outputs",
         
         if verbose:
             print(f"\n{'=' * 70}")
-            print(f"❌ SIMULATION FAILED")
+            print(f" SIMULATION FAILED")
             print(f"  Error: {str(e)}")
             print(f"{'=' * 70}\n")
         
@@ -275,7 +275,7 @@ def run_scenario(config: dict, output_dir: str = "outputs",
 def main():
     """Main entry point for command-line interface."""
     parser = argparse.ArgumentParser(
-        description='🌊 dewi-kadita: 3D Couzin Fish Schooling Simulator 🐟',
+        description='dewi-kadita: 3D Idealized Couzin Fish Schooling Simulator',
         epilog='Example: dewi-kadita case1'
     )
     
@@ -341,7 +341,7 @@ def main():
         
         for i, cfg_file in enumerate(config_files, 1):
             if verbose:
-                print(f"\n🐟 [Case {i}/{len(config_files)}] Running {cfg_file.stem}...")
+                print(f"\n [Case {i}/{len(config_files)}] Running {cfg_file.stem}...")
             
             config = ConfigManager.load(str(cfg_file))
             if args.no_entropy:
