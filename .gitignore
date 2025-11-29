@@ -34,3 +34,6 @@ __numba_cache__/
 
 # Test outputs
 test_outputs/
+
+# Asset exception
+!.assets/*.gif

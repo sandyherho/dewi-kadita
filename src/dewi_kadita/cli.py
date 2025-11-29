@@ -84,6 +84,9 @@ def run_scenario(config: dict, output_dir: str = "outputs",
                 max_turn=config.get('max_turn', 0.3),
                 noise=config.get('noise', 0.1),
                 blind_angle=config.get('blind_angle', 30.0),
+                orientation_weight=config.get('orientation_weight', 1.0),
+                torus_init=config.get('torus_init', False),
+                torus_radius=config.get('torus_radius', None),
                 seed=config.get('seed', None)
             )
             
@@ -91,6 +94,9 @@ def run_scenario(config: dict, output_dir: str = "outputs",
                 print(f"      N={system.n_fish}, L={system.box_size}, v0={system.speed}")
                 print(f"      Zones: r_r={system.r_repulsion}, r_o={system.r_orientation}, r_a={system.r_attraction}")
                 print(f"      θ_max={system.max_turn:.2f} rad, σ={system.noise:.2f} rad, blind={system.blind_angle}°")
+                print(f"      orientation_weight={system.orientation_weight:.2f}")
+                if config.get('torus_init', False):
+                    print(f"      Torus initialization: ENABLED (radius={config.get('torus_radius', 'auto')})")
         
         # [2/8] Initialize solver
         with timer.time_section("solver_init"):
@@ -243,6 +249,8 @@ def run_scenario(config: dict, output_dir: str = "outputs",
             print(f"{'=' * 70}")
             print(f"  Final polarization: {result['final_polarization']:.4f}")
             print(f"  Final rotation: {result['final_rotation']:.4f}")
+            print(f"  Mean polarization (2nd half): {result['mean_polarization']:.4f}")
+            print(f"  Mean rotation (2nd half): {result['mean_rotation']:.4f}")
             if metrics is not None:
                 print(f"  Final OSI (disorder): {metrics['oceanic_schooling_index_final']:.4f}")
             print(f"  Simulation time: {sim_time:.2f} s")

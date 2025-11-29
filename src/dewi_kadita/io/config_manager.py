@@ -53,6 +53,11 @@ class ConfigManager:
                 # Parse type
                 config[key] = ConfigManager._parse_value(value)
         
+        # Apply defaults for new torus-related parameters
+        config.setdefault('orientation_weight', 1.0)
+        config.setdefault('torus_init', False)
+        config.setdefault('torus_radius', None)
+        
         return config
     
     @staticmethod
@@ -61,6 +66,10 @@ class ConfigManager:
         # Boolean
         if value.lower() in ['true', 'false']:
             return value.lower() == 'true'
+        
+        # None
+        if value.lower() == 'none':
+            return None
         
         # Numeric
         try:
@@ -90,6 +99,8 @@ class ConfigManager:
             for key, value in sorted(config.items()):
                 if isinstance(value, bool):
                     value_str = 'true' if value else 'false'
+                elif value is None:
+                    value_str = 'none'
                 elif isinstance(value, float):
                     if abs(value) < 1e-4 or abs(value) > 1e4:
                         value_str = f"{value:.2e}"
@@ -149,5 +160,10 @@ class ConfigManager:
         
         if config.get('noise', -1) < 0:
             raise ValueError("noise must be >= 0")
+        
+        # Orientation weight bounds
+        orient_wt = config.get('orientation_weight', 1.0)
+        if orient_wt < 0 or orient_wt > 1:
+            raise ValueError("orientation_weight must be in [0, 1]")
         
         return True

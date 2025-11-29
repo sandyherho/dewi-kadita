@@ -36,6 +36,7 @@ class CouzinSystem:
         max_turn: Maximum turning angle per timestep (radians)
         noise: Angular noise magnitude (radians)
         blind_angle: Rear blind angle in degrees (0-180)
+        orientation_weight: Weight for orientation influence (0-1), default 1.0
         positions: (N, 3) array of fish positions
         velocities: (N, 3) array of fish velocities (unit vectors * speed)
     """
@@ -51,6 +52,9 @@ class CouzinSystem:
         max_turn: float = 0.3,
         noise: float = 0.1,
         blind_angle: float = 30.0,
+        orientation_weight: float = 1.0,
+        torus_init: bool = False,
+        torus_radius: Optional[float] = None,
         seed: Optional[int] = None
     ):
         """
@@ -66,6 +70,12 @@ class CouzinSystem:
             max_turn: Maximum turning angle per step in radians (θ_max)
             noise: Angular noise standard deviation in radians (σ)
             blind_angle: Rear blind angle in degrees (α)
+            orientation_weight: Weight for orientation zone influence (0-1)
+                               Lower values reduce alignment, promoting milling
+            torus_init: If True, initialize fish in circular arrangement
+                       with tangential velocities (for torus/milling state)
+            torus_radius: Radius of initial circle for torus_init
+                         If None, defaults to box_size * 0.25
             seed: Random seed for reproducibility
         """
         # Validate zone hierarchy
@@ -85,19 +95,71 @@ class CouzinSystem:
         self.noise = noise
         self.blind_angle = blind_angle
         self.blind_angle_rad = np.radians(blind_angle)
+        self.orientation_weight = np.clip(orientation_weight, 0.0, 1.0)
         self.seed = seed
         
         if seed is not None:
             np.random.seed(seed)
         
-        # Initialize random positions in box
-        self.positions = np.random.rand(n_fish, 3) * box_size
+        # Initialize positions and velocities
+        if torus_init:
+            # Toroidal/circular initialization for milling behavior
+            radius = torus_radius if torus_radius is not None else box_size * 0.25
+            self.positions, self.velocities = self._initialize_torus(radius)
+        else:
+            # Standard random initialization
+            self.positions = np.random.rand(n_fish, 3) * box_size
+            vel = np.random.randn(n_fish, 3)
+            norms = np.linalg.norm(vel, axis=1, keepdims=True)
+            norms[norms == 0] = 1.0
+            self.velocities = (vel / norms) * speed
+    
+    def _initialize_torus(self, radius: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Initialize fish in a toroidal/circular arrangement.
         
-        # Initialize random velocities (normalized to speed)
-        vel = np.random.randn(n_fish, 3)
-        norms = np.linalg.norm(vel, axis=1, keepdims=True)
-        norms[norms == 0] = 1.0
-        self.velocities = (vel / norms) * speed
+        Fish are placed on a circle in the XY plane centered in the box,
+        with velocities tangent to the circle. This seeds rotational
+        motion for torus/milling behavior.
+        
+        Args:
+            radius: Radius of the initial circle
+        
+        Returns:
+            Tuple of (positions, velocities) arrays
+        """
+        center = np.array([self.box_size / 2, self.box_size / 2, self.box_size / 2])
+        
+        positions = np.zeros((self.n_fish, 3))
+        velocities = np.zeros((self.n_fish, 3))
+        
+        for i in range(self.n_fish):
+            # Distribute angles uniformly with small noise
+            theta = 2 * np.pi * i / self.n_fish + np.random.randn() * 0.1
+            
+            # Position on circle (XY plane) with radial noise
+            r = radius + np.random.randn() * (radius * 0.15)
+            x = center[0] + r * np.cos(theta)
+            y = center[1] + r * np.sin(theta)
+            # Small vertical spread
+            z = center[2] + np.random.randn() * (radius * 0.3)
+            
+            positions[i] = [x, y, z]
+            
+            # Tangential velocity (perpendicular to radius, in XY plane)
+            # This creates initial rotation
+            vx = -np.sin(theta)
+            vy = np.cos(theta)
+            vz = np.random.randn() * 0.1  # Small vertical component
+            
+            vel = np.array([vx, vy, vz])
+            vel = vel / np.linalg.norm(vel) * self.speed
+            velocities[i] = vel
+        
+        # Apply periodic boundary conditions
+        positions = np.mod(positions, self.box_size)
+        
+        return positions, velocities
     
     def compute_polarization(self) -> float:
         """
@@ -214,5 +276,5 @@ class CouzinSystem:
             f"v0={self.speed}, r_r={self.r_repulsion}, "
             f"r_o={self.r_orientation}, r_a={self.r_attraction}, "
             f"θ_max={self.max_turn:.2f}, σ={self.noise:.2f}, "
-            f"blind={self.blind_angle}°)"
+            f"blind={self.blind_angle}°, orient_wt={self.orientation_weight:.2f})"
         )

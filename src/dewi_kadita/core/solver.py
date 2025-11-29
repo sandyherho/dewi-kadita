@@ -162,7 +162,8 @@ def _update_velocities_numba(
     max_turn: float,
     noise: float,
     blind_angle_rad: float,
-    speed: float
+    speed: float,
+    orientation_weight: float
 ) -> np.ndarray:
     """
     Numba-accelerated velocity update with Couzin zone dynamics.
@@ -182,6 +183,8 @@ def _update_velocities_numba(
         noise: Angular noise magnitude
         blind_angle_rad: Rear blind angle in radians
         speed: Constant swimming speed
+        orientation_weight: Weight for orientation influence (0-1)
+                           Lower values reduce alignment, promoting milling
     
     Returns:
         (N, 3) updated velocity array
@@ -256,12 +259,13 @@ def _update_velocities_numba(
             # Repulsion takes priority - ignore other zones
             desired_dir = _normalize(d_repulsion)
         elif n_orientation > 0 or n_attraction > 0:
-            # Combine orientation and attraction
+            # Combine orientation and attraction with orientation weight
             combined = np.zeros(3)
             if n_orientation > 0:
-                combined[0] += d_orientation[0]
-                combined[1] += d_orientation[1]
-                combined[2] += d_orientation[2]
+                # Apply orientation weight (key for torus formation)
+                combined[0] += d_orientation[0] * orientation_weight
+                combined[1] += d_orientation[1] * orientation_weight
+                combined[2] += d_orientation[2] * orientation_weight
             if n_attraction > 0:
                 combined[0] += d_attraction[0]
                 combined[1] += d_attraction[1]
@@ -292,7 +296,8 @@ def _update_velocities_numpy(
     max_turn: float,
     noise: float,
     blind_angle_rad: float,
-    speed: float
+    speed: float,
+    orientation_weight: float
 ) -> np.ndarray:
     """
     NumPy-based velocity update (fallback when Numba unavailable).
@@ -345,7 +350,7 @@ def _update_velocities_numpy(
             d_rep_norm = np.linalg.norm(d_rep)
             desired_dir = d_rep / d_rep_norm if d_rep_norm > 1e-10 else current_dir
         else:
-            d_orient = np.sum(unit_vel[in_zoo], axis=0) if np.any(in_zoo) else np.zeros(3)
+            d_orient = np.sum(unit_vel[in_zoo], axis=0) * orientation_weight if np.any(in_zoo) else np.zeros(3)
             d_attract = np.sum(delta_unit[in_zoa], axis=0) if np.any(in_zoa) else np.zeros(3)
             combined = d_orient + d_attract
             combined_norm = np.linalg.norm(combined)
@@ -448,6 +453,7 @@ class CouzinSolver:
         if verbose:
             print(f"      Running {n_steps} steps with dt={self.dt}")
             print(f"      Numba acceleration: {'enabled' if self.use_numba else 'disabled'}")
+            print(f"      Orientation weight: {system.orientation_weight:.2f}")
             print(f"      Initial polarization: {polarization[0]:.4f}")
             print(f"      Initial rotation: {rotation[0]:.4f}")
         
@@ -467,7 +473,8 @@ class CouzinSolver:
                 system.max_turn,
                 system.noise,
                 system.blind_angle_rad,
-                system.speed
+                system.speed,
+                system.orientation_weight
             )
         
         # Main simulation loop
@@ -491,7 +498,8 @@ class CouzinSolver:
                 system.max_turn,
                 system.noise,
                 system.blind_angle_rad,
-                system.speed
+                system.speed,
+                system.orientation_weight
             )
             
             # Update positions

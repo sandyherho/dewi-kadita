@@ -18,6 +18,8 @@
 
 A Python library for simulating fish schooling behavior using the 3D Couzin model with Numba JIT acceleration and comprehensive oceanic entropy metrics designed specifically for marine collective motion analysis.
 
+![Animation](https://raw.githubusercontent.com/sandyherho/dewi-kadita/main/.assets/case4_highly_parallel_animation.gif)
+
 ## Model
 
 The Couzin model (2002) describes collective animal motion through three concentric behavioral zones around each individual:
