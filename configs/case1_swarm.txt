@@ -1,0 +1,27 @@
+# Case 1: Swarm (Disordered Aggregation)
+# Large repulsion zone dominates, leading to loose aggregation
+# with little alignment - characteristic of feeding schools
+scenario_name = Case 1 - Swarm
+n_fish = 150
+box_size = 25.0
+speed = 1.0
+r_repulsion = 2.0
+r_orientation = 3.0
+r_attraction = 15.0
+max_turn = 0.4
+noise = 0.2
+blind_angle = 30.0
+dt = 0.1
+n_steps = 1000
+seed = 42
+use_numba = true
+compute_entropy = true
+save_csv = true
+save_netcdf = true
+save_png = true
+save_gif = true
+output_dir = outputs
+animation_fps = 30
+animation_dpi = 100
+animation_skip = 5
+animation_duration = 18.0

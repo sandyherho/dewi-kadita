@@ -1,0 +1,28 @@
+# Case 3: Dynamic Parallel (Fluctuating Alignment)
+# High alignment with directional fluctuations
+# School maintains cohesion while changing direction
+# Characteristic of migrating schools
+scenario_name = Case 3 - Dynamic Parallel
+n_fish = 180
+box_size = 28.0
+speed = 1.2
+r_repulsion = 1.0
+r_orientation = 10.0
+r_attraction = 18.0
+max_turn = 0.35
+noise = 0.12
+blind_angle = 25.0
+dt = 0.1
+n_steps = 1500
+seed = 456
+use_numba = true
+compute_entropy = true
+save_csv = true
+save_netcdf = true
+save_png = true
+save_gif = true
+output_dir = outputs
+animation_fps = 30
+animation_dpi = 100
+animation_skip = 8
+animation_duration = 20.0

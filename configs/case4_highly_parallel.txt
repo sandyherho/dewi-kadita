@@ -1,0 +1,28 @@
+# Case 4: Highly Parallel (Stable Aligned Motion)
+# Very high polarization, stable directional movement
+# Large orientation zone and low noise create strong alignment
+# Observed in fast-moving pelagic schools
+scenario_name = Case 4 - Highly Parallel
+n_fish = 250
+box_size = 35.0
+speed = 1.5
+r_repulsion = 1.0
+r_orientation = 12.0
+r_attraction = 20.0
+max_turn = 0.2
+noise = 0.05
+blind_angle = 20.0
+dt = 0.1
+n_steps = 1000
+seed = 789
+use_numba = true
+compute_entropy = true
+save_csv = true
+save_netcdf = true
+save_png = true
+save_gif = true
+output_dir = outputs
+animation_fps = 30
+animation_dpi = 100
+animation_skip = 5
+animation_duration = 18.0

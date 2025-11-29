@@ -1,0 +1,28 @@
+# Case 2: Torus (Rotating Mill / Milling Behavior)
+# Balanced zones create rotating vortex structure
+# High rotation order parameter, moderate polarization
+# Observed in predator evasion and exploration
+scenario_name = Case 2 - Torus
+n_fish = 200
+box_size = 30.0
+speed = 1.0
+r_repulsion = 1.0
+r_orientation = 8.0
+r_attraction = 15.0
+max_turn = 0.25
+noise = 0.08
+blind_angle = 45.0
+dt = 0.1
+n_steps = 1200
+seed = 123
+use_numba = true
+compute_entropy = true
+save_csv = true
+save_netcdf = true
+save_png = true
+save_gif = true
+output_dir = outputs
+animation_fps = 30
+animation_dpi = 100
+animation_skip = 6
+animation_duration = 20.0
