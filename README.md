@@ -14,7 +14,7 @@
 [![Pillow](https://img.shields.io/badge/Pillow-%23000000.svg)](https://python-pillow.org/)
 [![tqdm](https://img.shields.io/badge/tqdm-%23FFC107.svg)](https://tqdm.github.io/)
 
-*Named after Dewi Kadita, the legendary Queen of the Southern Sea in Javanese mythology*
+*Named after Kanjeng Ratu Kidul, the legendary Queen of the Southern Sea in Javanese mythology*
 
 A Python library for simulating fish schooling behavior using the 3D Couzin model with Numba JIT acceleration and comprehensive oceanic entropy metrics designed specifically for marine collective motion analysis.
 
@@ -225,10 +225,6 @@ The library generates:
 - **Pillow** >= 8.0.0
 - **tqdm** >= 4.60.0
 
-## References
-
-- Couzin, I.D., Krause, J., James, R., Ruxton, G.D., & Franks, N.R. (2002). Collective memory and spatial sorting in animal groups. *Journal of Theoretical Biology*, 218(1), 1-11.
-- Couzin, I.D., & Krause, J. (2003). Self-organization and collective behavior in vertebrates. *Advances in the Study of Behavior*, 32, 1-75.
 
 ## License
 
