@@ -116,8 +116,17 @@ class Animator:
     
     def _add_underwater_glow(self, image: Image.Image, intensity: float = 1.3) -> Image.Image:
         """Add ethereal underwater glow effect."""
+        # Convert to RGB if image has alpha channel (RGBA)
+        if image.mode == 'RGBA':
+            # Preserve alpha channel
+            alpha = image.split()[3]
+            rgb_image = image.convert('RGB')
+        else:
+            alpha = None
+            rgb_image = image.convert('RGB')
+        
         # Create glow layer
-        glow = image.filter(ImageFilter.GaussianBlur(radius=4))
+        glow = rgb_image.filter(ImageFilter.GaussianBlur(radius=4))
         
         # Enhance blue channel for underwater feel
         r, g, b = glow.split()
@@ -125,7 +134,14 @@ class Animator:
         glow = Image.merge('RGB', (r, g, b))
         
         # Blend with original
-        return Image.blend(image, glow, alpha=0.2)
+        result = Image.blend(rgb_image, glow, alpha=0.2)
+        
+        # Restore alpha channel if it existed
+        if alpha is not None:
+            result = result.convert('RGBA')
+            result.putalpha(alpha)
+        
+        return result
     
     def _add_caustics_effect(self, ax, box_size: float, time_phase: float):
         """Add subtle caustic light patterns (simulated)."""
