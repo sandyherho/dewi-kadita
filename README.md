@@ -4,6 +4,8 @@
 [![PyPI version](https://img.shields.io/pypi/v/dewi-kadita.svg)](https://pypi.org/project/dewi-kadita/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![DOI](https://zenodo.org/badge/1106385474.svg)](https://doi.org/10.5281/zenodo.17760126)
+
 
 [![NumPy](https://img.shields.io/badge/NumPy-%23013243.svg?logo=numpy&logoColor=white)](https://numpy.org/)
 [![SciPy](https://img.shields.io/badge/SciPy-%230C55A5.svg?logo=scipy&logoColor=white)](https://scipy.org/)
@@ -236,7 +238,7 @@ MIT © Sandy H. S. Herho, Iwan P. Anwar, Siti N. Kaban, Faruq Khadami
 
 ```bibtex
 @software{herho2025_dewi_kadita,
-  title   = {dewi-kadita: A Python library for 3D idealized Couzin model fish schooling simulation},
+  title   = {{\texttt{dewi-kadita}: A Python library for 3D idealized Couzin model fish schooling simulation}},
   author  = {Herho, Sandy H. S. and Anwar, Iwan P. and Kaban, Siti N. and Khadami, Faruq},
   year    = {2025},
   url     = {https://github.com/sandyherho/dewi-kadita}
