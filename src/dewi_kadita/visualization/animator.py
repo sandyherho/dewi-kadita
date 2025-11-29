@@ -171,7 +171,7 @@ class Animator:
         # Layout based on metrics availability
         if metrics is not None:
             fig = plt.figure(figsize=(20, 12), facecolor=self.COLOR_ABYSS)
-            fig.suptitle(f'🌊 {title} 🐟\nOceanic Fish Schooling Dynamics',
+            fig.suptitle(f'{title}\nOceanic Fish Schooling Dynamics',
                         fontsize=20, fontweight='bold', color=self.COLOR_TITLE, y=0.98)
             
             # Create grid: 2x3
@@ -183,7 +183,7 @@ class Animator:
             ax6 = fig.add_subplot(236, facecolor=self.COLOR_DEEP_BLUE)
         else:
             fig = plt.figure(figsize=(16, 7), facecolor=self.COLOR_ABYSS)
-            fig.suptitle(f'🌊 {title} 🐟',
+            fig.suptitle(f'{title}',
                         fontsize=20, fontweight='bold', color=self.COLOR_TITLE, y=0.98)
             ax1 = fig.add_subplot(121, facecolor=self.COLOR_DEEP_BLUE)
             ax2 = fig.add_subplot(122, projection='3d', facecolor=self.COLOR_ABYSS)
@@ -452,7 +452,7 @@ class Animator:
                          color=self.COLOR_TEXT, labelpad=8)
             
             # Title with ocean emoji
-            ax.set_title(f'🌊 {title} 🐟',
+            ax.set_title(f'{title}',
                         fontsize=18, fontweight='bold', 
                         color=self.COLOR_TITLE, pad=25)
             
