@@ -288,6 +288,6 @@ class DataHandler:
                 nc.mean_oceanic_schooling_index = float(metrics['oceanic_schooling_index_mean'])
             
             # References
-            nc.author = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Siti N. Kaban, Kamaluddin Kasim"
+            nc.author = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Alfita P. Handayani, Karlina A. Sujatmiko, Kamaluddin Kasim"
             nc.email = "sandy.herho@email.ucr.edu"
             nc.license = "MIT"

@@ -224,15 +224,15 @@ The library generates:
 
 ## License
 
-MIT © Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Siti N. Kaban, Kamaluddin Kasim
+MIT © Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Alfita P. Handayani, Karlina A. Sujatmiko, Kamaluddin Kasim
 
 ## Citation
 
 ```bibtex
 @software{herho2025_dewi_kadita,
   title   = {{\texttt{dewi-kadita}: A Python library for 3D idealized Couzin model fish schooling simulation}},
-  author  = {Herho, Sandy H. S. and Anwar, Iwan P. and Khadami, Faruq and Kaban, Siti N. and Kasim, Kamaluddin},
-  year    = {2025},
+  author  = {Herho, Sandy H. S. and Anwar, Iwan P. and Khadami, Faruq and Handayani, Alfita P. and Sujatmiko, Karlina A. and Kasim, Kamaluddin},
+  year    = {2026},
   url     = {https://github.com/sandyherho/dewi-kadita}
 }
 ```
