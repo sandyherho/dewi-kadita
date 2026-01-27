@@ -1,7 +1,7 @@
 """dewi-kadita: Idealized 3D Couzin Model Fish Schooling Simulator with Oceanic Entropy Metrics"""
 
 __version__ = "0.0.1"
-__author__ = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Alfita P. Handayani, Karlina Sujatmiko, Kamaluddin Kasim"
+__author__ = "Sandy H. S. Herho, Iwan P. Anwar, Faruq Khadami, Alfita P. Handayani, Karina Sujatmiko, Kamaluddin Kasim"
 __email__ = "sandy.herho@email.ucr.edu"
 __license__ = "MIT"
 
