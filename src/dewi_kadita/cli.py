@@ -21,7 +21,7 @@ def print_header():
     """Print ASCII art header with oceanic theme."""
     print("\n" + "=" * 70)
     print(" " * 10 + "dewi-kadita: 3D Idealized Couzin Fish Schooling Simulator")
-    print(" " * 25 + "Version 0.0.3")
+    print(" " * 25 + "Version 0.0.4")
     print("=" * 70)
     print("\n  Named after Kanjeng Ratu Kidul, Queen of the Southern Sea")
     print("  Collective Motion and Fish Schooling Behavior Simulation")
